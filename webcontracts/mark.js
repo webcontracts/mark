@@ -10,7 +10,9 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const infile = path.join(__dirname, '..', 'webcredits', 'webcredits.json')
+const indir = path.join(__dirname, '..', 'webcredits')
+const infile = path.join(indir, 'webcredits.json')
+console.log(indir)
 console.log(infile)
 
 globalThis.data = {
@@ -29,7 +31,7 @@ data.destination = argv.destination || data.destination
 data.description = argv.description || data.description
 data.context = argv.context || data.context
 
-var credit = {}
+var credit = { "@type": "Credit" }
 if (data.source) credit.source = data.source
 if (data.amount) credit.amount = data.amount
 if (data.currency) credit.currency = data.currency
@@ -40,7 +42,20 @@ if (data.description) credit.description = data.description
 if (data.context) credit.context = data.context
 
 // MAIN
-var credits = JSON.parse(fs.readFileSync(infile))
+var credits = []
+try {
+  var d = fs.readFileSync(infile)
+  var credits = JSON.parse(d)
+} catch (e) {
+  if (!fs.existsSync(indir)) {
+    console.log('making dir', indir)
+    fs.mkdirSync(indir)
+  }
+  console.log('creating', infile)
+  var d = JSON.stringify([], null, 1)
+  fs.writeFileSync(infile, d)
+}
+
 if (data.amount) {
   credits.push(credit)
 }
