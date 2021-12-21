@@ -44,7 +44,8 @@ Here is a full example of a [Web Credits](https://webcredits.org/) Object
   "currency": "Mark",
   "destination": "http://webr3.org/nathan#me",
   "description": "for technical help",
-  "context": "https://github.com/project-bitmark/bitmark"
+  "context": "https://github.com/project-bitmark/bitmark",
+  "timestamp": 1640111035
 }
 ```
 
@@ -75,8 +76,21 @@ The following switches are allowed
 --currency    # the currency
 --destination # what is being marked
 --description # a description of why
---context     # optional additional context 
+--context     # optional additional context
+--timestamp   # unix style timestamp
+--infile      # custom file to use for credits
+--indir       # custom dir to use for credits
 ```
+
+or from npm 
+
+```JavaScript
+import mark from 'webcontracts-mark'
+
+function mark(source, amount, currency, destination, timesamp, description, context, indir, infile)
+```
+
+
 
 # ⚖️ License
 
