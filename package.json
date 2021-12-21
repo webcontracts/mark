@@ -1,6 +1,6 @@
 {
   "name": "webcontract-mark",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "mark",
   "main": "mark.js",
   "scripts": {
