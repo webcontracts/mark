@@ -7,16 +7,24 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 // CONTRACT
-function mark(source, amount, currency, destination, timesamp, description, context, indir, infile) {
-  var credit = { "@type": "Credit" }
-  if (source) credit.source = source
-  if (amount) credit.amount = amount
-  if (currency) credit.currency = currency
-  if (destination) credit.destination = destination
-  if (timestamp) credit.timestamp = timestamp
-  console.log('credit', credit)
-  if (description) credit.description = description
-  if (context) credit.context = context
+function mark(credit, indir, infile) {
+
+  const __filename = fileURLToPath(import.meta.url)
+  const __dirname = path.dirname(__filename)
+
+  indir = indir || path.join(__dirname, '..', 'webcredits')
+  infile = infile || path.join(indir, 'webcredits.json')
+
+
+  var ret = { "@type": "Credit" }
+  if (credit.source) ret.source = credit.source
+  if (credit.amount) ret.amount = credit.amount
+  if (credit.currency) ret.currency = credit.currency
+  if (credit.destination) ret.destination = credit.destination
+  if (credit.timestamp) ret.timestamp = credit.timestamp
+  if (credit.description) ret.description = credit.description
+  if (credit.context) ret.context = credit.context
+  console.log('ret', ret)
 
   // MAIN
   var credits = []
@@ -34,7 +42,7 @@ function mark(source, amount, currency, destination, timesamp, description, cont
   }
 
   if (data.amount) {
-    credits.push(credit)
+    credits.push(ret)
   }
 
   // WRITE
@@ -69,8 +77,18 @@ data.context = argv.context || data.context
 data.indir = argv.indir || data.indir
 data.infile = argv.infile || data.infile
 
+
 // MAIN
-mark(data.source, data.amount, data.currency, data.destination, data.timesamp, data.description, data.context, indir, infile)
+var credit = {
+  source: data.source,
+  amount: data.amount,
+  currency: data.currency,
+  destination: data.destination,
+  description: data.description,
+  context: data.context,
+  timestamp: data.timestamp
+}
+mark(credit, indir, infile)
 
 // EXPORT
 export default mark
