@@ -57,7 +57,7 @@ Both the webledger and the web credits will appear as JSON in the `webcredits` d
 
 ## Web Contract
 
-The Web Contract is a single file that operates on the webcredits data store and is described [here](hhttps://github.com/webcontracts/mark/blob/gh-pages/webcontracts/mark.js)
+The Web Contract is a single file that operates on the webcredits data store and is described [here](https://github.com/webcontracts/mark/blob/gh-pages/webcontracts/mark.js)
 
 ## Signing
 
