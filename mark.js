@@ -27,6 +27,7 @@ console.log('data', data)
 data.source = argv.source || data.source
 data.destination = argv.destination || data.destination
 data.description = argv.description || data.description
+data.context = argv.context || data.context
 
 var credit = {}
 if (data.source) credit.source = data.source
@@ -36,6 +37,7 @@ if (data.destination) credit.destination = data.destination
 if (data.timestamp) credit.timestamp = data.timestamp
 console.log('credit', credit)
 if (data.description) credit.description = data.description
+if (data.context) credit.context = data.context
 
 // MAIN
 var credits = JSON.parse(fs.readFileSync(infile))
