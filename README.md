@@ -87,9 +87,20 @@ or from npm
 ```JavaScript
 import mark from 'webcontracts-mark'
 
-function mark(source, amount, currency, destination, timesamp, description, context, indir, infile)
+var credit = {
+  source: data.source,
+  amount: data.amount,
+  currency: data.currency,
+  destination: data.destination,
+  description: data.description,
+  context: data.context,
+  timestamp: data.timestamp
+}
+
+function mark(credit, indir, infile)
 ```
 
+indir and infile are optional and will default to `../webcredits/webcredits.json`
 
 
 # ⚖️ License
