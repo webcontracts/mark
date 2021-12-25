@@ -1,7 +1,7 @@
 {
   "@id": "gitmark:dbb3293634ac7218a31e48b448b588d969264e7a6e854149e0883338915e8ab7:0",
   "genesis": "gitmark:dbb3293634ac7218a31e48b448b588d969264e7a6e854149e0883338915e8ab7:0",
-  "nick": "gitmark",
+  "nick": "webcontract-mark",
   "package": "./package.json",
   "repository": "./"
 }
