@@ -37,7 +37,7 @@ Here is a full example of a [Web Credits](https://webcredits.org/) Object
 
 ```
 {
-  "@id": "cuid:a74xt3jbin",
+  "@id": "urn:cuid:a74xt3jbin",
   "@type": "Credit",
   "source": "https://melvincarvalho.com/#me"
   "amount": 100,
@@ -71,6 +71,7 @@ mark.js <amount> [description]
 
 The following switches are allowed
 ```
+--id          # the id for the credit object
 --source      # the source of the mark
 --amount      # how much
 --currency    # the currency
@@ -88,6 +89,7 @@ or from npm
 import mark from 'webcontracts-mark'
 
 var credit = {
+  id: data.id,
   source: data.source,
   amount: data.amount,
   currency: data.currency,

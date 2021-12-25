@@ -3,6 +3,7 @@
 // IMPORTS
 import fs from 'fs'
 import minimist from 'minimist'
+import cuid from 'cuid'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -62,7 +63,8 @@ console.log(infile)
 
 globalThis.data = {
   amount: 5,
-  timestamp: Math.round(Date.now() / 1000)
+  timestamp: Math.round(Date.now() / 1000),
+  cuid: false
 }
 var argv = minimist(process.argv.slice(2))
 console.log(argv)
@@ -71,14 +73,15 @@ data.id = argv.id || data.id
 data.amount = argv.amount || parseInt(argv._[0]) || data.amount
 data.currency = argv.currency || data.currency
 data.timestamp = argv.timestamp || data.timestamp
-console.log('data', data)
 data.source = argv.source || data.source
 data.destination = argv.destination || data.destination
 data.description = argv.description || data.description
 data.context = argv.context || data.context
 data.indir = argv.indir || data.indir
 data.infile = argv.infile || data.infile
+data.cuid = !!argv.cuid || data.cuid
 
+console.log('data', data)
 
 // MAIN
 var credit = {
@@ -91,7 +94,11 @@ var credit = {
   context: data.context,
   timestamp: data.timestamp
 }
-mark(credit, indir, infile)
+if (data.cuid) {
+  const cuidPrefix = 'urn:cuid:'
+  credit.id = cuidPrefix + cuid()
+}
+mark(credit, data.indir, data.infile)
 
 // EXPORT
 export default mark
