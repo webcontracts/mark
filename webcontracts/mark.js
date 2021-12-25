@@ -17,6 +17,7 @@ function mark(credit, indir, infile) {
 
 
   var ret = { "@type": "Credit" }
+  if (credit.id) ret['@id'] = credit.id
   if (credit.source) ret.source = credit.source
   if (credit.amount) ret.amount = credit.amount
   if (credit.currency) ret.currency = credit.currency
@@ -66,6 +67,7 @@ globalThis.data = {
 var argv = minimist(process.argv.slice(2))
 console.log(argv)
 
+data.id = argv.id || data.id
 data.amount = argv.amount || parseInt(argv._[0]) || data.amount
 data.currency = argv.currency || data.currency
 data.timestamp = argv.timestamp || data.timestamp
@@ -80,6 +82,7 @@ data.infile = argv.infile || data.infile
 
 // MAIN
 var credit = {
+  id: data.id,
   source: data.source,
   amount: data.amount,
   currency: data.currency,
