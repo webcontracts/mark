@@ -8,47 +8,79 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 // CONTRACT
-function mark(credit, indir, infile) {
+function mark(credit, indir, creditsFile, ledgerFile) {
 
+  // INIT
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
 
   indir = indir || path.join(__dirname, '..', 'webcredits')
-  infile = infile || path.join(indir, 'webcredits.json')
-
-
-  var ret = { "@type": "Credit" }
-  if (credit.id) ret['@id'] = credit.id
-  if (credit.source) ret.source = credit.source
-  if (credit.amount) ret.amount = credit.amount
-  if (credit.currency) ret.currency = credit.currency
-  if (credit.destination) ret.destination = credit.destination
-  if (credit.timestamp) ret.timestamp = credit.timestamp
-  if (credit.description) ret.description = credit.description
-  if (credit.context) ret.context = credit.context
-  console.log('ret', ret)
+  creditsFile = creditsFile || path.join(indir, 'webcredits.json')
+  ledgerFile = ledgerFile || path.join(indir, 'webledger.json')
 
   // MAIN
+  // SETUP
   var credits = []
+  var ledger = {}
   try {
-    var d = fs.readFileSync(infile)
-    var credits = JSON.parse(d)
+    var credits = readJson(creditsFile)
+    var ledger = readJson(ledgerFile)
   } catch (e) {
     if (!fs.existsSync(indir)) {
       console.log('making dir', indir)
       fs.mkdirSync(indir)
     }
-    console.log('creating', infile)
-    var d = JSON.stringify([], null, 1)
-    fs.writeFileSync(infile, d)
+    if (!fs.existsSync(creditsFile)) {
+      var credits = []
+      console.log('creating', creditsFile)
+      writeJson(creditsFile, credits)
+    }
+    if (!fs.existsSync(ledgerFile)) {
+      var ledger = {}
+      console.log('creating', ledgerFile)
+      writeJson(ledgerFile, ledger)
+    }
   }
 
-  if (data.amount) {
+  if (credit.amount) {
+    // CREDIT
+    var ret = { "@type": "Credit" }
+    if (credit.id) ret['@id'] = credit.id
+    if (credit.source) ret.source = credit.source
+    if (credit.amount) ret.amount = credit.amount
+    if (credit.currency) ret.currency = credit.currency
+    if (credit.destination) ret.destination = credit.destination
+    if (credit.timestamp) ret.timestamp = credit.timestamp
+    if (credit.description) ret.description = credit.description
+    if (credit.context) ret.context = credit.context
+    console.log('ret', ret)
     credits.push(ret)
+
+    // LEDGER
+    ledger[credit.source] -= data.amount
+    ledger[credit.destination] = ledger[credit.destination] || 5
+    ledger[credit.destination] += data.amount
+    console.log('ledger', ledger)
+
+    // WRITE
+    writeJson(creditsFile, credits)
+    writeJson(ledgerFile, ledger)
   }
 
-  // WRITE
-  fs.writeFileSync(infile, JSON.stringify(credits, null, 1))
+}
+
+// READ FUNCTIONS
+// TODO add multi data store back end
+function readJson(file) {
+  var d = fs.readFileSync(file)
+  return JSON.parse(d)
+}
+
+// WRITE FUNCTIONS
+// TODO add proper lockfile
+// TODO add multi data store back end
+function writeJson(file, json) {
+  fs.writeFileSync(file, JSON.stringify(json, null, 1))
 }
 
 
@@ -57,14 +89,15 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const indir = path.join(__dirname, '..', 'webcredits')
-const infile = path.join(indir, 'webcredits.json')
+const creditsFile = path.join(indir, 'webcredits.json')
 console.log(indir)
-console.log(infile)
+console.log(creditsFile)
 
 globalThis.data = {
   amount: 5,
   timestamp: Math.round(Date.now() / 1000),
-  cuid: false
+  cuid: false,
+  store: 'file'
 }
 var argv = minimist(process.argv.slice(2))
 console.log(argv)
@@ -78,7 +111,8 @@ data.destination = argv.destination || data.destination
 data.description = argv.description || data.description
 data.context = argv.context || data.context
 data.indir = argv.indir || data.indir
-data.infile = argv.infile || data.infile
+data.creditsFile = argv.creditsFile || data.creditsFile
+data.ledgerFile = argv.ledgerFile || data.ledgerFile
 data.cuid = !!argv.cuid || data.cuid
 
 console.log('data', data)
@@ -98,7 +132,7 @@ if (data.cuid) {
   const cuidPrefix = 'urn:cuid:'
   credit.id = cuidPrefix + cuid()
 }
-mark(credit, data.indir, data.infile)
+mark(credit, data.indir, data.creditsFile, data.ledgerFile)
 
 // EXPORT
 export default mark
