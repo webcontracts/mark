@@ -8,7 +8,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 // CONTRACT
-function mark(credit, indir, creditsFile, ledgerFile) {
+function mark(credit, indir, creditsFile, ledgerFile, options) {
 
   // INIT
   const __filename = fileURLToPath(import.meta.url)
@@ -58,6 +58,10 @@ function mark(credit, indir, creditsFile, ledgerFile) {
 
     // LEDGER
     ledger[credit.source] = ledger[credit.source] || 0
+    if (ledger[credit.source] < data.amount && !options.allowNegative) {
+      console.error('error: source', ledger[credit.source], 'is less than amount', data.amount)
+      return
+    }
     ledger[credit.source] -= data.amount
     ledger[credit.destination] = ledger[credit.destination] || 5
     ledger[credit.destination] += data.amount
@@ -98,7 +102,8 @@ globalThis.data = {
   amount: 5,
   timestamp: Math.round(Date.now() / 1000),
   cuid: false,
-  store: 'file'
+  store: 'file',
+  allowNegative: false
 }
 var argv = minimist(process.argv.slice(2))
 console.log(argv)
@@ -115,6 +120,7 @@ data.indir = argv.indir || data.indir
 data.creditsFile = argv.creditsFile || data.creditsFile
 data.ledgerFile = argv.ledgerFile || data.ledgerFile
 data.cuid = !!argv.cuid || data.cuid
+data.allowNegative = argv.allowNegative || data.allowNegative
 
 console.log('data', data)
 
@@ -133,7 +139,10 @@ if (data.cuid) {
   const cuidPrefix = 'urn:cuid:'
   credit.id = cuidPrefix + cuid()
 }
-mark(credit, data.indir, data.creditsFile, data.ledgerFile)
+var options = {
+  allowNegative: data.allowNegative
+}
+mark(credit, data.indir, data.creditsFile, data.ledgerFile, options)
 
 // EXPORT
 export default mark

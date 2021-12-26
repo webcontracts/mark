@@ -71,16 +71,17 @@ mark.js <amount> [description]
 
 The following switches are allowed
 ```
---id          # the id for the credit object
---source      # the source of the mark
---amount      # how much
---currency    # the currency
---destination # what is being marked
---description # a description of why
---context     # optional additional context
---timestamp   # unix style timestamp
---infile      # custom file to use for credits
---indir       # custom dir to use for credits
+--id            # the id for the credit object
+--source        # the source of the mark
+--amount        # how much
+--currency      # the currency
+--destination   # what is being marked
+--description   # a description of why
+--context       # optional additional context
+--timestamp     # unix style timestamp
+--infile        # custom file to use for credits
+--indir         # custom dir to use for credits
+--allowNegative # allows the ledger to go negative
 ```
 
 or from npm 
