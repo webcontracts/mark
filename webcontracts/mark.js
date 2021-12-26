@@ -42,7 +42,7 @@ function mark(credit, indir, creditsFile, ledgerFile) {
     }
   }
 
-  if (credit.amount) {
+  if (credit.amount && credit.amount > 0) {
     // CREDIT
     var ret = { "@type": "Credit" }
     if (credit.id) ret['@id'] = credit.id
@@ -57,6 +57,7 @@ function mark(credit, indir, creditsFile, ledgerFile) {
     credits.push(ret)
 
     // LEDGER
+    ledger[credit.source] = ledger[credit.source] || 0
     ledger[credit.source] -= data.amount
     ledger[credit.destination] = ledger[credit.destination] || 5
     ledger[credit.destination] += data.amount
