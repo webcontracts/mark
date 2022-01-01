@@ -7,16 +7,29 @@ import cuid from 'cuid'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-// CONTRACT
-function mark(credit, indir, creditsFile, ledgerFile, options) {
+// WEB CONTRACT
+/**
+ * 
+ * @param {Object} credit credit object is a transaction
+ * @param {string} credit.id credit id as per JSON-LD or Linked Objects
+ * @param {string} credit.source source of the transaction
+ * @param {number} credit.amount amount
+ * @param {string} credit.destination destination of the transaction
+ * @param {string} credit.description description of the transaction
+ * @param {string} credit.context context of the transaction
+ * @param {number} credit.timestamp timestamp in UNIX format
+ * @param {Object} options 
+ * @returns 
+ */
+function mark(credit, options) {
 
   // INIT
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
 
-  indir = indir || path.join(__dirname, '..', 'webcredits')
-  creditsFile = creditsFile || path.join(indir, 'webcredits.json')
-  ledgerFile = ledgerFile || path.join(indir, 'webledger.json')
+  var indir = options.indir || path.join(__dirname, '..', 'webcredits')
+  var creditsFile = options.creditsFile || path.join(indir, 'webcredits.json')
+  var ledgerFile = options.ledgerFile || path.join(indir, 'webledger.json')
 
   // MAIN
   // SETUP
@@ -63,7 +76,7 @@ function mark(credit, indir, creditsFile, ledgerFile, options) {
       return
     }
     ledger[credit.source] -= data.amount
-    ledger[credit.destination] = ledger[credit.destination] || 5
+    ledger[credit.destination] = ledger[credit.destination] || 0
     ledger[credit.destination] += data.amount
     console.log('ledger', ledger)
 
@@ -140,9 +153,13 @@ if (data.cuid) {
   credit.id = cuidPrefix + cuid()
 }
 var options = {
-  allowNegative: data.allowNegative
+  allowNegative: data.allowNegative,
+  indir: data.indir,
+  creditsFile: data.creditsFile,
+  ledgerFile: data.ledgerFile
 }
-mark(credit, data.indir, data.creditsFile, data.ledgerFile, options)
+console.log('options', options)
+mark(credit, options)
 
 // EXPORT
 export default mark
